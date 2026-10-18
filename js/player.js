@@ -321,7 +321,8 @@
           h.y += h.vy * dt / 4;
           h.len = Math.hypot(h.x - this.x, h.y - (this.y - this.h * 0.55));
           const tx = Math.floor(h.x / TS), ty = Math.floor(h.y / TS);
-          if (T.isSolid(game.world.getTile(tx, ty))) {
+          const anchorTile = game.world.getTile(tx, ty);
+          if (T.isSolid(anchorTile) || T.isTree(anchorTile)) {
             h.state = 'hooked';
             h.anchor = { x: tx * TS + TS / 2, y: ty * TS + TS / 2 };
             h.x = h.anchor.x;
@@ -1051,12 +1052,21 @@
 
     fellTree(tx, ty) {
       const world = this.game.world;
-      const tiles = [[0, -1], [-1, 0], [1, 0]];
-      let up = ty;
-      while (up > 0 && (world.getTile(tx, up) === TILE.TREETRUNK || world.getTile(tx, up) === TILE.LEAVES)) {
-        if (world.getTile(tx, up) === TILE.TREETRUNK) this.game.dropItem((tx + 0.5) * TS, up * TS, 'wood', 1);
-        world.setTile(tx, up, TILE.AIR);
-        up--;
+      let top = ty;
+      for (let k = 1; k < 40; k++) {
+        const t = world.getTile(tx, ty - k);
+        if (t === TILE.TREETRUNK || t === TILE.LEAVES || t === TILE.CORRUPT_LEAVES || t === TILE.JUNGLE_LEAVES) top = ty - k;
+        else break;
+      }
+      let woodCount = 0;
+      for (let y = top; y <= ty; y++) {
+        const t = world.getTile(tx, y);
+        if (t === TILE.TREETRUNK) { woodCount++; world.setTile(tx, y, TILE.AIR); }
+        else if (t === TILE.LEAVES || t === TILE.CORRUPT_LEAVES || t === TILE.JUNGLE_LEAVES) world.setTile(tx, y, TILE.AIR);
+        else if (y !== ty) break;
+      }
+      if (woodCount > 0) {
+        this.game.dropItem((tx + 0.5) * TS, (ty - 1) * TS, 'wood', Math.min(woodCount, 20));
       }
       for (let dy = -1; dy <= 1; dy++) {
         for (let dx = -3; dx <= 3; dx++) {
@@ -1163,7 +1173,11 @@
     }
 
     wouldCrush(tx, ty) {
-      return false;
+      const r = { x: tx * TS, y: ty * TS, w: TS, h: TS };
+      const pr = this.rect();
+      if (!T.rectsOverlap(r, pr)) return false;
+      const top = ty * TS, bottom = ty * TS + TS;
+      return pr.y < bottom - 3 && pr.y + pr.h > top + 3;
     }
 
     tryInteract(input) {

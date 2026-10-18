@@ -87,7 +87,7 @@
     pal: ['#8a5a2b', '#a9743c', '#6d431c', '#583514'], art: 'wood'
   });
   t(TILE.TREETRUNK, {
-    name: '树干', solid: true, hard: 0.45, tool: 'axe', drop: 'wood', col: '#7a4c24',
+    name: '树干', solid: false, hard: 0.45, tool: 'axe', drop: 'wood', col: '#7a4c24', transparent: true,
     pal: ['#7a4c24', '#966133', '#5d3818', '#4a2b10'], art: 'trunk', tree: true
   });
   t(TILE.LEAVES, {
