@@ -1,0 +1,16 @@
+# 临时验证 / 构建 / 工具目录（绝不入库）
+_v/
+_verify/
+_final/
+_qa/
+.tools/
+node_modules/
+
+# 系统与编辑器杂项
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# 本地临时压缩包
+*.zip
