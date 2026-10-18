@@ -2,7 +2,14 @@
   const T = window.T;
 
   function isTouchDevice() {
-    return ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    try {
+      const coarse = window.matchMedia('(pointer: coarse)').matches;
+      const noHover = window.matchMedia('(hover: none)').matches;
+      const touchPoints = (navigator.maxTouchPoints || 0) > 0;
+      return coarse && touchPoints && noHover;
+    } catch (e) {
+      return false;
+    }
   }
 
   class TouchControls {
@@ -52,33 +59,35 @@
       const canvas = document.getElementById('game');
       const prevent = function (e) { e.preventDefault(); };
 
-      this.root.addEventListener('touchstart', prevent, { passive: false });
-      this.root.addEventListener('touchmove', prevent, { passive: false });
+      this.root.addEventListener('touchstart', function (e) {
+        if (e.target.closest && e.target.closest('.touch-btn')) return;
+      }, { passive: true });
       this.root.querySelectorAll('.touch-btn').forEach(function (btn) {
-        btn.addEventListener('touchstart', function (e) {
+        const start = function (e) {
           e.preventDefault();
           e.stopPropagation();
           const act = btn.dataset.act;
           self.pressButton(act, true);
           btn.classList.add('down');
-        }, { passive: false });
-        btn.addEventListener('touchend', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
+        };
+        const end = function (e) {
+          if (e) { e.preventDefault(); e.stopPropagation(); }
           const act = btn.dataset.act;
           self.pressButton(act, false);
           btn.classList.remove('down');
-        }, { passive: false });
-        btn.addEventListener('touchcancel', function (e) {
-          const act = btn.dataset.act;
-          self.pressButton(act, false);
-          btn.classList.remove('down');
-        });
+        };
+        btn.addEventListener('touchstart', start, { passive: false });
+        btn.addEventListener('touchend', end, { passive: false });
+        btn.addEventListener('touchcancel', end, { passive: false });
+        btn.addEventListener('mousedown', start);
+        btn.addEventListener('mouseup', end);
+        btn.addEventListener('mouseleave', end);
       });
 
       const stick = this.stick;
       const onStickStart = function (e) {
         e.preventDefault();
+        e.stopPropagation();
         const t = e.changedTouches[0];
         self.moveId = t.identifier;
         const r = stick.getBoundingClientRect();
@@ -199,14 +208,22 @@
 
     pressButton(act, down) {
       const g = this.game;
+      g.touchBuffer = g.touchBuffer || { jump: 0, use: 0, place: 0, jumpFresh: false };
+      const buf = g.touchBuffer;
       if (act === 'jump') {
-        g.keys.jump = down;
-        if (down) g.edge.jump = true;
+        if (down) {
+          buf.jump = 0.16;
+          buf.jumpFresh = true;
+          g.keys.jump = true;
+        } else {
+          g.keys.jump = false;
+        }
       } else if (act === 'use') {
-        g.mouseDown = down;
+        if (down) { buf.use = 0.2; g.mouseDown = true; }
+        else { g.mouseDown = false; }
       } else if (act === 'place') {
-        g.rightDown = down;
-        if (!down) g.edge.releaseHook = true;
+        if (down) { buf.place = 0.2; g.rightDown = true; }
+        else { g.rightDown = false; g.edge.releaseHook = true; }
       } else if (act === 'bag') {
         if (down) g.ui.toggle('inv');
       } else if (act === 'heal') {
@@ -214,18 +231,19 @@
       }
     }
 
-    update() {
+    update(dt) {
       const g = this.game;
       if (!this.enabled) return;
+      const buf = g.touchBuffer;
+      if (buf) {
+        const d = dt || 0.016;
+        if (buf.jump > 0) { buf.jump -= d; if (buf.jump <= 0) { g.keys.jump = false; buf.jumpFresh = false; } }
+        if (buf.use > 0) buf.use -= d;
+        if (buf.place > 0) buf.place -= d;
+      }
       if (this.aiming) {
         g.mouse.x = this.aimPos.x;
         g.mouse.y = this.aimPos.y;
-      }
-      const mv = this.moveVec;
-      if (Math.abs(mv.x) > 0.28) {
-        const sp = Math.abs(mv.x);
-        g.keys.left = mv.x < 0;
-        g.keys.right = mv.x > 0;
       }
     }
 

@@ -59,15 +59,16 @@
     drawMinimap(dt) {
       this.ensureMinimap();
       this.minimapT += dt;
-      if (this.minimapT < 0.12) return;
+      if (this.minimapT < 0.2) return;
       this.minimapT = 0;
       const game = this.game;
       const world = game.world;
       const p = game.player;
       const ctx = this.minimapCtx;
       const S = 168;
-      const scale = 0.55;
+      const scale = 0.5;
       const half = S / 2;
+      const step = 2;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       const bg = ctx.createLinearGradient(0, 0, 0, S);
       bg.addColorStop(0, '#2a4a6e');
@@ -84,8 +85,8 @@
         }
       }
       const radius = Math.ceil(half / scale);
-      for (let dy = -radius; dy <= radius; dy++) {
-        for (let dx = -radius; dx <= radius; dx++) {
+      for (let dy = -radius; dy <= radius; dy += step) {
+        for (let dx = -radius; dx <= radius; dx += step) {
           const tx = cx + dx;
           const ty = cy + dy;
           if (tx < 0 || ty < 0 || tx >= world.W || ty >= world.H) continue;
@@ -107,7 +108,7 @@
           ctx.fillStyle = col;
           const sx = half + (tx - cx) * scale;
           const sy = half + (ty - cy) * scale;
-          ctx.fillRect(Math.floor(sx), Math.floor(sy), Math.ceil(scale), Math.ceil(scale));
+          ctx.fillRect(Math.floor(sx), Math.floor(sy), Math.ceil(scale * step), Math.ceil(scale * step));
         }
       }
       for (const n of game.npcs) {

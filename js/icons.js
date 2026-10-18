@@ -950,7 +950,39 @@
         armor(ctx, col, 'helmet');
         break;
       }
-      default: {
+      case 'material': {
+        const c2 = T.rgb(col);
+        ctx.fillStyle = 'rgba(' + c2[0] + ',' + c2[1] + ',' + c2[2] + ',0.9)';
+        ctx.beginPath();
+        ctx.moveTo(8, 2.5);
+        ctx.lineTo(13.5, 6);
+        ctx.lineTo(13.5, 11.5);
+        ctx.lineTo(8, 14.5);
+        ctx.lineTo(2.5, 11.5);
+        ctx.lineTo(2.5, 6);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.42)';
+        ctx.beginPath();
+        ctx.moveTo(8, 2.5);
+        ctx.lineTo(13.5, 6);
+        ctx.lineTo(8, 8);
+        ctx.lineTo(2.5, 6);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,0.22)';
+        ctx.beginPath();
+        ctx.moveTo(2.5, 6);
+        ctx.lineTo(8, 8);
+        ctx.lineTo(8, 14.5);
+        ctx.lineTo(2.5, 11.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.28)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+        break;
+      }      default: {
         ctx.fillStyle = col;
         ctx.beginPath();
         ctx.moveTo(4, 12);

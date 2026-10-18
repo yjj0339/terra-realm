@@ -466,9 +466,25 @@
       this.dead = true;
       this.deathT = 0;
       this.stats.deaths++;
-      this.game.audio.play('death');
-      this.game.particles.burst(this.x, this.y - this.h / 2, 30, { color: ['#a02030', '#ff6070', '#6a1020'], speed: 160, life: 0.9, gravity: 280 });
-      this.game.onPlayerDeath();
+      const game = this.game;
+      const lost = Math.floor(this.coins * 0.5);
+      if (lost > 0) {
+        this.coins -= lost;
+        let left = lost;
+        const gold = Math.floor(left / 10000);
+        left -= gold * 10000;
+        const silver = Math.floor(left / 100);
+        left -= silver * 100;
+        if (gold > 0) game.dropItem(this.x, this.y - 20, 'coin_gold', gold);
+        if (silver > 0) game.dropItem(this.x, this.y - 20, 'coin_silver', silver);
+        if (left > 0) game.dropItem(this.x, this.y - 20, 'coin_copper', left);
+        game.ui.toast('死亡掉落 ' + T.coinString(lost) + ' 在你的尸体旁', '#ffb07a');
+      }
+      this.audio_death = true;
+      game.audio.play('death');
+      game.particles.burst(this.x, this.y - this.h / 2, 30, { color: ['#a02030', '#ff6070', '#6a1020'], speed: 160, life: 0.9, gravity: 280 });
+      if (this.hook) this.hook = null;
+      game.onPlayerDeath();
     }
 
     respawn() {
@@ -910,6 +926,14 @@
       if (tdef.liquid) return;
       const tool = def.tool;
       const required = tdef.tool || 'pick';
+      if (tdef.pickPower && required === 'pick' && (def.power || 30) < tdef.pickPower) {
+        if (!this.noPickWarn || performance.now() - this.noPickWarn > 1300) {
+          this.noPickWarn = performance.now();
+          game.toast('镐的威力不足，需要更强的镐', '#ffb07a');
+          game.audio.play('hit');
+        }
+        return;
+      }
       let speedMul = 1;
       if (tool !== required) {
         if (tdef.furniture || tdef.deco) speedMul = 1.2;
@@ -1228,7 +1252,9 @@
       game.audio.play('swing');
       this.attackHit = new Set();
       const reach = (def.reach || 1.8) * TS * 1.9;
-      const dmg = Math.round((def.dmg || 5) * this.damageBonus());
+      const variance = 0.85 + Math.random() * 0.3;
+      const isCrit = Math.random() < 0.06 + (this.hasAccessory('damage') ? 0.04 : 0);
+      const dmg = Math.round((def.dmg || 5) * this.damageBonus() * variance);
       const cx = this.x + this.dir * reach * 0.5;
       const cy = this.y - this.h * 0.55;
       const hitbox = {
@@ -1240,7 +1266,7 @@
       game.hitEnemiesInRect(hitbox, dmg, {
         knock: def.knock || 4,
         source: this,
-        crit: Math.random() < 0.06,
+        crit: isCrit,
         element: def.glow ? 'magic' : 'melee',
         onHit: (enemy) => {
           if (def.id === 'demonite_sword') {

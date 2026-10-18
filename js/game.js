@@ -936,7 +936,6 @@
           if (t === T.TILE.TABLE) stations.workbench = true;
         }
       }
-      if (this.world.flags.hardmode) stations.hellforge = stations.hellforge;
       return stations;
     }
 
@@ -1073,6 +1072,13 @@
       input.right = !!this.keys.right;
       input.up = !!this.keys.up;
       input.down = !!this.keys.down;
+      if (this.touchBuffer && this.touchBuffer.jump > 0) {
+        this.keys.jump = true;
+        this.edge.jump = this.edge.jump || this.touchBuffer.jumpFresh;
+        this.touchBuffer.jumpFresh = false;
+      }
+      if (this.touchBuffer && this.touchBuffer.use > 0) this.mouseDown = true;
+      if (this.touchBuffer && this.touchBuffer.place > 0) this.rightDown = true;
       input.jump = !!this.keys.jump;
       input.jumpPressed = !!this.edge.jump;
       input.dash = !!this.keys.dash;
@@ -1300,7 +1306,7 @@
         if (this.shakeT <= 0) this.shakePow = 0;
       }
       this.player.invDirty = true;
-      if (this.touch) this.touch.update();
+      if (this.touch) this.touch.update(dt);
       this.ui.update(dt);
       this.audio.updateMusic(this, dt);
       this.checkAutoSave(dt);

@@ -41,7 +41,21 @@ git commit -m "描述这次改动"
 git push origin main
 ```
 
-推送到 `main` 后 GitHub Pages 自动重新构建，通常 30–60 秒生效。刷新页面时用 `Ctrl + F5` 强刷，避免旧的 `js/*.js` 命中浏览器缓存。
+推送到 `main` 后 GitHub Pages 自动重新构建。实测时间线：
+
+| 阶段 | 耗时 |
+| --- | --- |
+| push 完成 → Pages 开始构建 | 5–15 秒 |
+| 构建中（`status=building`）→ `status=built` | 约 30–40 秒 |
+| `built` → 新内容真实可访问 | 再等 10–30 秒 |
+
+`curl` 和浏览器返回的响应头是 `Cache-Control: max-age=600`，即边缘节点和浏览器都会缓存 **10 分钟**。所以刚推完如果看到旧内容，先确认构建状态已是 `built`，再用无痕窗口或 `Ctrl + F5` 强刷；普通刷新可能仍在吃旧缓存。
+
+想确认线上到底是哪一版，直接比对 JS 大小或 ETag，比看页面可靠：
+
+```powershell
+curl.exe -sSI https://yjj0339.github.io/terra-realm/js/game.js | Select-String "Content-Length|ETag"
+```
 
 ## 验证
 

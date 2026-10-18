@@ -71,7 +71,7 @@
     pal: ['#4b4140', '#5d5150', '#382f2f', '#2a2323'], art: 'ash'
   });
   t(TILE.EBONSTONE, {
-    name: '黑檀石块', solid: true, hard: 0.7, tool: 'pick', drop: 'ebonstone', col: '#4a3c5e',
+    name: '黑檀石块', solid: true, hard: 0.7, tool: 'pick', pickPower: 45, drop: 'ebonstone', col: '#4a3c5e',
     pal: ['#4a3c5e', '#5e4e75', '#382c49', '#2c2139'], art: 'ebonstone'
   });
   t(TILE.CORRUPT_GRASS, {
@@ -184,15 +184,15 @@
     pal: ['#94683a', '#b2834f', '#6e4a24', '#5a3a1a'], art: 'brick_wood'
   });
   t(TILE.BRICK_DUNGEON, {
-    name: '地牢砖', solid: true, hard: 1.1, tool: 'pick', drop: null, col: '#3c4a6b',
+    name: '地牢砖', solid: true, hard: 1.1, tool: 'pick', pickPower: 65, drop: null, col: '#3c4a6b',
     pal: ['#3c4a6b', '#4f5f84', '#2c3750', '#222a3d'], art: 'brick_dungeon'
   });
   t(TILE.BRICK_OBSIDIAN, {
-    name: '黑曜石砖', solid: true, hard: 1.4, tool: 'pick', drop: 'obsidian_brick', col: '#2e2438',
+    name: '黑曜石砖', solid: true, hard: 1.4, tool: 'pick', pickPower: 65, drop: 'obsidian_brick', col: '#2e2438',
     pal: ['#2e2438', '#4a3a5a', '#1d1624', '#ff7a1f'], art: 'brick_obsidian'
   });
   t(TILE.BRICK_EBON, {
-    name: '黑檀砖', solid: true, hard: 1.0, tool: 'pick', drop: 'ebonstone_brick', col: '#443356',
+    name: '黑檀砖', solid: true, hard: 1.0, tool: 'pick', pickPower: 55, drop: 'ebonstone_brick', col: '#443356',
     pal: ['#443356', '#5d4874', '#332446', '#241a33'], art: 'brick_ebon'
   });
   t(TILE.SAPLING, {
@@ -216,15 +216,15 @@
     pal: ['#71777d', '#e8c14a', '#8a9299', '#ffe27a'], art: 'ore'
   });
   t(TILE.ORE_DEMONITE, {
-    name: '恶魔矿', solid: true, hard: 1.3, tool: 'pick', drop: 'demonite_ore', col: '#6d4f9e',
+    name: '恶魔矿', solid: true, hard: 1.3, tool: 'pick', pickPower: 55, drop: 'demonite_ore', col: '#6d4f9e',
     pal: ['#463a5c', '#7d5cb0', '#5a4a75', '#a888e0'], art: 'ore'
   });
   t(TILE.ORE_METEOR, {
-    name: '陨石矿', solid: true, hard: 1.2, tool: 'pick', drop: 'meteorite_ore', col: '#9b7c6a',
+    name: '陨石矿', solid: true, hard: 1.2, tool: 'pick', pickPower: 50, drop: 'meteorite_ore', col: '#9b7c6a',
     pal: ['#7a6258', '#b0907c', '#5d4a42', '#6f8fa0'], art: 'ore', light: [255, 120, 80, 2]
   });
   t(TILE.ORE_HELL, {
-    name: '狱石矿', solid: true, hard: 1.8, tool: 'pick', drop: 'hellstone_ore', col: '#8a3a26',
+    name: '狱石矿', solid: true, hard: 1.8, tool: 'pick', pickPower: 75, drop: 'hellstone_ore', col: '#8a3a26',
     pal: ['#4b4140', '#a84a2a', '#5d5150', '#ff8a3a'], art: 'ore', light: [255, 90, 40, 2.5], fire: true
   });
   t(TILE.GEM_AMETHYST, {
@@ -290,15 +290,15 @@
     pal: ['#71777d', '#a8b6c6', '#8a9299', '#c8d4e2'], art: 'ore'
   });
   t(TILE.ORE_TUNGSTEN, {
-    name: '钨矿', solid: true, hard: 0.78, tool: 'pick', drop: 'tungsten_ore', col: '#a8b0c8',
+    name: '钨矿', solid: true, hard: 0.78, tool: 'pick', pickPower: 45, drop: 'tungsten_ore', col: '#a8b0c8',
     pal: ['#71777d', '#b4bcd4', '#8a9299', '#d8e0f4'], art: 'ore'
   });
   t(TILE.ORE_PLATINUM, {
-    name: '铂金矿', solid: true, hard: 0.9, tool: 'pick', drop: 'platinum_ore', col: '#e0e8f0',
+    name: '铂金矿', solid: true, hard: 0.9, tool: 'pick', pickPower: 50, drop: 'platinum_ore', col: '#e0e8f0',
     pal: ['#71777d', '#eef4fa', '#8a9299', '#ffffff'], art: 'ore'
   });
   t(TILE.ORE_CRIMTANE, {
-    name: '血金矿', solid: true, hard: 1.1, tool: 'pick', drop: 'crimtane_ore', col: '#c84060',
+    name: '血金矿', solid: true, hard: 1.1, tool: 'pick', pickPower: 55, drop: 'crimtane_ore', col: '#c84060',
     pal: ['#5a2a3a', '#d85070', '#7a3a4a', '#f07090'], art: 'ore', light: [255, 80, 110, 1.8]
   });
   t(TILE.GEM_EMERALD, {

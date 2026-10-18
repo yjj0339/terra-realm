@@ -437,9 +437,12 @@
         this.canvas.height = ph;
       }
       this.dpr = dpr;
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       this.vw = w;
       this.vh = h;
-      this.zoom = T.clamp(Math.min(w / 1200, h / 700) * 1.45, 1.15, 2.3);
+      const touch = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches && (navigator.maxTouchPoints || 0) > 0);
+      const base = touch ? Math.min(w / 620, h / 330) * 0.92 : Math.min(w / 1200, h / 700) * 1.45;
+      this.zoom = T.clamp(base, touch ? 1.5 : 1.15, touch ? 2.9 : 2.3);
     }
 
     ensureSize() {
